@@ -68,7 +68,7 @@ resource "aws_iam_role_policy_attachment" "eventbridge_full_access" {
 }
 
 resource "aws_iam_openid_connect_provider" "github_actions_identity_provider" {
-  url = "https://token.actions.githubusercontent.com"
+  url             = "https://token.actions.githubusercontent.com"
   thumbprint_list = ["d89e3bd43d5d909b47a18977aa9d5ce36cee184c"]
   client_id_list  = ["sts.amazonaws.com"]
 }
