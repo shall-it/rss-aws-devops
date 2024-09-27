@@ -1,1 +1,1 @@
-# rss-aws-devops
+# rsschool-devops-course-tasks
