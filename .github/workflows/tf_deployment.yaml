@@ -15,49 +15,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.5
 
       - name: Terraform Format Check
-        run: terraform fmt -check -chdir=tf_resources/
+        run: terraform fmt -check tf_resources/
 
   terraform-plan:
     runs-on: ubuntu-latest
     needs: terraform-check
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.5
 
       - name: Terraform Init
-        run: terraform init -chdir=tf_resources/
+        run: terraform -chdir=tf_resources/ init
 
       - name: Terraform Plan
-        run: terraform plan -chdir=tf_resources/
+        run: terraform -chdir=tf_resources/ plan
 
   terraform-apply:
     runs-on: ubuntu-latest
     needs: terraform-plan
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/task_1'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.5
 
       - name: Terraform Init
-        run: terraform init -chdir=tf_resources/
+        run: terraform -chdir=tf_resources/ init
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -chdir=tf_resources/
+        run: terraform -chdir=tf_resources/ apply -auto-approve
