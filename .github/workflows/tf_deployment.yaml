@@ -7,8 +7,7 @@ on:
       - main
   push:
     branches:
-      - main
-      - task_1
+      - task_*
 
 permissions:
   id-token: write   # This is required for requesting the JWT
