@@ -14,9 +14,14 @@ permissions:
   id-token: write   # This is required for requesting the JWT
   contents: read    # This is required for actions/checkout
 
+env:
+  TERRAFORM_VERSION: '1.9.5'
+  AWS_GHA_ROLE: 'arn:aws:iam::035511759406:role/GithubActionsRole'
+  AWS_REGION: 'us-east-1'
+
 jobs:
   terraform-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
@@ -24,13 +29,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.9.5
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
 
       - name: Terraform Format Check
         run: terraform fmt -check tf_resources/
 
   terraform-plan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: terraform-check
     steps:
       - name: Checkout code
@@ -39,13 +44,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.9.5
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::035511759406:role/GithubActionsRole
-          aws-region: us-east-1
+          role-to-assume: ${{ env.AWS_GHA_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform -chdir=tf_resources/ init
@@ -54,7 +59,7 @@ jobs:
         run: terraform -chdir=tf_resources/ plan
 
   terraform-apply:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: terraform-plan
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/task_1'
     steps:
@@ -64,13 +69,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.9.5
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::035511759406:role/GithubActionsRole
-          aws-region: us-east-1
+          role-to-assume: ${{ env.AWS_GHA_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform -chdir=tf_resources/ init

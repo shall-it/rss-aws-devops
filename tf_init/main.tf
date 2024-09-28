@@ -8,7 +8,7 @@ provider "aws" {
 # init
 
 resource "aws_s3_bucket" "tf_states" {
-  bucket = "rss-aws-devops"
+  bucket = var.bucket_name
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "tf_states" {

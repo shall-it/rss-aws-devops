@@ -8,7 +8,7 @@ provider "aws" {
 # task_1
 
 resource "aws_iam_role" "github_actions_role" {
-  name = "GithubActionsRole"
+  name = var.aws_iam_role_name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -71,4 +71,8 @@ resource "aws_iam_openid_connect_provider" "github_actions_identity_provider" {
   url             = "https://token.actions.githubusercontent.com"
   thumbprint_list = ["d89e3bd43d5d909b47a18977aa9d5ce36cee184c"]
   client_id_list  = ["sts.amazonaws.com"]
+}
+
+output "aws_iam_role_arn" {
+  value = aws_iam_role.github_actions_role.arn
 }
