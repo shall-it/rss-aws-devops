@@ -60,7 +60,7 @@ jobs:
   terraform-apply:
     runs-on: ubuntu-22.04
     needs: terraform-plan
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/task_1'
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' || startsWith(github.ref, 'refs/heads/task_')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
