@@ -1,6 +1,6 @@
 #!/bin/bash
 dnf update -y
-dnf install -y httpd nmap
+dnf install -y httpd nmap nc
 
 systemctl start httpd
 systemctl enable httpd

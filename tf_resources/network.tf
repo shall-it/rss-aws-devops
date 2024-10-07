@@ -3,13 +3,13 @@
 
 data "aws_ami" "al2023-ami" {
   most_recent = true
-  owners = ["amazon"]
+  owners      = ["amazon"]
   filter {
     name   = "name"
     values = ["al2023-ami-2023.5.*"]
   }
   filter {
-    name = "architecture"
+    name   = "architecture"
     values = ["arm64"]
   }
 }
@@ -19,16 +19,16 @@ resource "aws_vpc" "primary" {
 }
 
 resource "aws_subnet" "public_a_az" {
-  vpc_id            = aws_vpc.primary.id
-  cidr_block        = "10.0.11.0/24"
-  availability_zone = "us-east-1a"
+  vpc_id                  = aws_vpc.primary.id
+  cidr_block              = "10.0.11.0/24"
+  availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "public_b_az" {
-  vpc_id            = aws_vpc.primary.id
-  cidr_block        = "10.0.12.0/24"
-  availability_zone = "us-east-1b"
+  vpc_id                  = aws_vpc.primary.id
+  cidr_block              = "10.0.12.0/24"
+  availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
 }
 
@@ -81,7 +81,7 @@ resource "aws_route_table_association" "private_b_az" {
   route_table_id = aws_route_table.private.id
 }
 
-resource "aws_security_group" "allow_all" {
+resource "aws_security_group" "test_stack" {
   vpc_id = aws_vpc.primary.id
 
   lifecycle {
@@ -103,15 +103,38 @@ resource "aws_security_group" "allow_all" {
   }
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
     cidr_blocks = [
-      "46.53.252.80/32",
       aws_subnet.public_a_az.cidr_block,
       aws_subnet.public_b_az.cidr_block,
       aws_subnet.private_a_az.cidr_block,
       aws_subnet.private_b_az.cidr_block,
+    ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "bastion" {
+  vpc_id = aws_vpc.primary.id
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+    cidr_blocks = [
+      "46.53.252.80/32",
     ]
   }
 
