@@ -57,6 +57,32 @@ resource "aws_route_table" "public" {
   }
 }
 
+# Without NATGW
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.primary.id
+}
+# Without NATGW
+
+# # With NATGW
+# resource "aws_eip" "nat" {
+#   domain = "vpc"
+# }
+
+# resource "aws_nat_gateway" "nat" {
+#   allocation_id = aws_eip.nat.id
+#   subnet_id     = aws_subnet.public_a_az.id
+# }
+
+# resource "aws_route_table" "private" {
+#   vpc_id = aws_vpc.primary.id
+
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.nat.id
+#   }
+# }
+# # With NATGW
+
 resource "aws_route_table_association" "public_a_az" {
   subnet_id      = aws_subnet.public_a_az.id
   route_table_id = aws_route_table.public.id
@@ -65,10 +91,6 @@ resource "aws_route_table_association" "public_a_az" {
 resource "aws_route_table_association" "public_b_az" {
   subnet_id      = aws_subnet.public_b_az.id
   route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.primary.id
 }
 
 resource "aws_route_table_association" "private_a_az" {
@@ -107,6 +129,7 @@ resource "aws_security_group" "test_stack" {
     to_port   = 22
     protocol  = "tcp"
     cidr_blocks = [
+      "46.53.252.80/32", # TEMP
       aws_subnet.public_a_az.cidr_block,
       aws_subnet.public_b_az.cidr_block,
       aws_subnet.private_a_az.cidr_block,
@@ -151,38 +174,11 @@ resource "aws_network_acl" "public_nacl" {
 
   ingress {
     rule_no    = 100
-    protocol   = "tcp"
+    protocol   = "-1"
     action     = "allow"
     cidr_block = "0.0.0.0/0"
-    from_port  = 80
-    to_port    = 80
-  }
-
-  ingress {
-    rule_no    = 110
-    protocol   = "tcp"
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 443
-    to_port    = 443
-  }
-
-  ingress {
-    rule_no    = 120
-    protocol   = "tcp"
-    action     = "allow"
-    cidr_block = "46.53.252.80/32"
-    from_port  = 22
-    to_port    = 22
-  }
-
-  ingress {
-    rule_no    = 130
-    protocol   = "tcp"
-    action     = "allow"
-    cidr_block = var.primary_cidr_block
-    from_port  = 22
-    to_port    = 22
+    from_port  = 0
+    to_port    = 0
   }
 
   egress {
@@ -195,12 +191,12 @@ resource "aws_network_acl" "public_nacl" {
   }
 }
 
-# resource "aws_network_acl_association" "public_a_az" {
-#   subnet_id      = aws_subnet.public_a_az.id
-#   network_acl_id = aws_network_acl.public_nacl.id
-# }
+resource "aws_network_acl_association" "public_a_az" {
+  subnet_id      = aws_subnet.public_a_az.id
+  network_acl_id = aws_network_acl.public_nacl.id
+}
 
-# resource "aws_network_acl_association" "public_b_az" {
-#   subnet_id      = aws_subnet.public_b_az.id
-#   network_acl_id = aws_network_acl.public_nacl.id
-# }
+resource "aws_network_acl_association" "public_b_az" {
+  subnet_id      = aws_subnet.public_b_az.id
+  network_acl_id = aws_network_acl.public_nacl.id
+}
