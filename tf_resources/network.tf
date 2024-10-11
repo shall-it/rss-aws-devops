@@ -39,10 +39,10 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  for_each                = local.private_subnets
-  vpc_id                  = aws_vpc.primary.id
-  cidr_block              = each.value.cidr_block
-  availability_zone       = each.value.az
+  for_each          = local.private_subnets
+  vpc_id            = aws_vpc.primary.id
+  cidr_block        = each.value.cidr_block
+  availability_zone = each.value.az
 }
 
 resource "aws_internet_gateway" "public" {
@@ -118,9 +118,9 @@ resource "aws_security_group" "test_stack" {
   }
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = [var.personal_ip]
   }
 
@@ -152,9 +152,9 @@ resource "aws_security_group" "bastion" {
   }
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = [var.personal_ip]
   }
 
@@ -211,13 +211,13 @@ resource "aws_network_acl" "private" {
 }
 
 resource "aws_network_acl_association" "public" {
-  for_each        = aws_subnet.public
-  subnet_id       = each.value.id
-  network_acl_id  = aws_network_acl.public.id
+  for_each       = aws_subnet.public
+  subnet_id      = each.value.id
+  network_acl_id = aws_network_acl.public.id
 }
 
 resource "aws_network_acl_association" "private" {
-  for_each        = aws_subnet.private
-  subnet_id       = each.value.id
-  network_acl_id  = aws_network_acl.private.id
+  for_each       = aws_subnet.private
+  subnet_id      = each.value.id
+  network_acl_id = aws_network_acl.private.id
 }

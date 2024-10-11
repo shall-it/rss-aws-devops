@@ -1,6 +1,6 @@
 
 locals {
-  all_subnets = merge(aws_subnet.public, aws_subnet.private)
+  all_subnets     = merge(aws_subnet.public, aws_subnet.private)
   all_cidr_blocks = [for subnet in local.all_subnets : subnet.cidr_block]
 }
 
