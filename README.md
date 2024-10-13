@@ -13,7 +13,14 @@ As of now project has next directories and files:
 ## Task 2
 https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basic-configuration/task_2.md
 
-During this task dedicated VPC with public and private subnets in both us-east-1a and us-east-1b AZs were created.
+During this task we implemented:
+1. dedicated VPC with public and private subnets in both us-east-1a and us-east-1b AZs
+2. test instances in both types of subnets with auto-check of accessible neighbours and access beyond VPC
+3. bastion host to access instances from private subnets
+4. NAT Gateway to provide access out of VPC for private instances
+5. SG/NACL to secure our resources
+
+Please use `terraform init/plan/apply` commands from `tf_resources` directory to deploy all of these resources. Or just push your changes into `task_2` branch or create PR to `master`.
 
 Instances from public subnets are publicly accessible from world by HTTP/HTTPS via public IPs. They use Internet Gateway to reach resources out of VPC. Also they are accessible by SSH only within VPC (you can use bastion host to reach them from your personal IP).
 
@@ -21,4 +28,4 @@ Instances from private subnets are not publicly accessible. They use NAT Gateway
 
 You can review all the screenshots and details into PR to Task 2: https://github.com/shall-it/rsschool-devops-course-tasks/pull/2
 
-**Important note!** Strongly recommended - destroy all instances and NAT Gateway especially when you don't need them to save your money since these resources are most expensive!
+**Important note!** Strongly recommended - destroy all instances in both public and private subnets, bastion host and NAT Gateway especially when you don't need them to save your money since these resources are most expensive!
