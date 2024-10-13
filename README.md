@@ -20,4 +20,5 @@ Instances from public subnets are publicly accessible from world by HTTP/HTTPS v
 Instances from private subnets are not publicly accessible. They use NAT Gateway to reach resources out of VPC. Since they are located into private subnets they are accessible by HTTP/HTTPS or SSH only within VPC (you can use bastion host to reach them from your personal IP).
 
 You can review all the screenshots and details into PR to Task 2: https://github.com/shall-it/rsschool-devops-course-tasks/pull/2
+
 **Important note!** Strongly recommended - destroy all instances and NAT Gateway especially when you don't need them to save your money since these resources are most expensive!
