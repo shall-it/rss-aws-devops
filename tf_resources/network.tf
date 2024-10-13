@@ -58,31 +58,23 @@ resource "aws_route_table" "public" {
   }
 }
 
-# Without NATGW
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public["public_a"].id
+}
+
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.primary.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
 }
-# Without NATGW
-
-# # With NATGW
-# resource "aws_eip" "nat" {
-#   domain = "vpc"
-# }
-
-# resource "aws_nat_gateway" "nat" {
-#   allocation_id = aws_eip.nat.id
-#   subnet_id     = aws_subnet.publiс["public_a"].id
-# }
-
-# resource "aws_route_table" "private" {
-#   vpc_id = aws_vpc.primary.id
-
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     nat_gateway_id = aws_nat_gateway.nat.id
-#   }
-# }
-# # With NATGW
 
 resource "aws_route_table_association" "public" {
   for_each       = aws_subnet.public
@@ -96,7 +88,7 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
 }
 
-resource "aws_security_group" "test_stack" {
+resource "aws_security_group" "common" {
   vpc_id = aws_vpc.primary.id
 
   lifecycle {
@@ -115,13 +107,6 @@ resource "aws_security_group" "test_stack" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = [var.global_cidr_block]
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.personal_ip]
   }
 
   ingress {
