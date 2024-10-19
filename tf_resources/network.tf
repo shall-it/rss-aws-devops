@@ -27,7 +27,9 @@ data "aws_ami" "al2023-ami" {
 }
 
 resource "aws_vpc" "primary" {
-  cidr_block = var.primary_cidr_block
+  cidr_block           = var.primary_cidr_block
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 }
 
 resource "aws_subnet" "public" {
@@ -143,6 +145,13 @@ resource "aws_security_group" "bastion" {
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.personal_ip]
+  }
+
+  ingress {
+    from_port   = 6443
+    to_port     = 6443
     protocol    = "tcp"
     cidr_blocks = [var.personal_ip]
   }

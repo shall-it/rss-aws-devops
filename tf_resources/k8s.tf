@@ -1,10 +1,6 @@
 
 # task_3
 
-# resource "aws_route_table" "private" {
-#   vpc_id = aws_vpc.primary.id
-# }
-
 resource "aws_iam_role" "kops" {
   name = "kops_role"
 
@@ -111,6 +107,9 @@ resource "aws_s3_bucket_public_access_block" "kops" {
 #   subnet_id              = aws_subnet.public["public_a"].id
 #   vpc_security_group_ids = [aws_security_group.bastion.id]
 #   key_name               = aws_key_pair.kp.key_name
+#   tags = {
+#     Name = "bastion-instance"
+#   }
 # }
 
 # output "bastion_public_ip" {
