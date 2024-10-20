@@ -60,10 +60,13 @@ resource "aws_route_table" "public" {
   }
 }
 
+#WITHOUT NAT
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.primary.id
 }
+#WITHOUT NAT
 
+# # #WITH NAT
 # resource "aws_eip" "nat" {
 #   domain = "vpc"
 # }
@@ -81,6 +84,7 @@ resource "aws_route_table" "private" {
 #     nat_gateway_id = aws_nat_gateway.nat.id
 #   }
 # }
+# # #WITH NAT
 
 resource "aws_route_table_association" "public" {
   for_each       = aws_subnet.public

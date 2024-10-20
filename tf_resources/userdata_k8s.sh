@@ -23,4 +23,6 @@ kops export kubecfg \
   --name ${name} \
   --state s3://${bucket} \
   --kubeconfig=/home/ec2-user/.kube/config \
-  --admin 
+  --admin
+chown ec2-user:ec2-user /home/ec2-user/.kube/config
+chmod 600 /home/ec2-user/.kube/config

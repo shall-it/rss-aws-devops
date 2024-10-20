@@ -81,6 +81,8 @@ resource "aws_s3_bucket_public_access_block" "kops" {
   restrict_public_buckets = true
 }
 
+# Deploy of kOps infrastructure requires NAT enabling in network.tf file
+
 # resource "aws_instance" "kops_instance" {
 #   ami                         = data.aws_ami.al2023-ami.id
 #   subnet_id                   = aws_subnet.private["private_a"].id
