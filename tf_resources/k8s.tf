@@ -93,8 +93,8 @@ resource "aws_s3_bucket_public_access_block" "kops" {
 
 #   user_data_replace_on_change = true
 #   user_data = templatefile("${path.module}/userdata_k8s.sh", {
-#     bucket = var.bucket_name_kops
-#     name   = "kops.k8s.local"
+#     NAME             = "kops.k8s.local"
+#     KOPS_STATE_STORE = "s3://${var.bucket_name_kops}"
 #   })
 #   depends_on = [aws_route_table_association.private]
 
