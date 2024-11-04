@@ -118,22 +118,22 @@ resource "aws_s3_bucket_public_access_block" "kops" {
 #   value = aws_instance.bastion.public_ip
 # }
 
-resource "aws_instance" "kops_instance" {
-  ami                         = data.aws_ami.al2023-ami.id
-  subnet_id                   = aws_subnet.public["public_a"].id
-  vpc_security_group_ids      = [aws_security_group.bastion.id]
-  key_name                    = aws_key_pair.kp.key_name
-  instance_type               = var.instance_type
-  iam_instance_profile        = aws_iam_instance_profile.kops_instance_profile.name
+# resource "aws_instance" "kops_instance" {
+#   ami                         = data.aws_ami.al2023-ami.id
+#   subnet_id                   = aws_subnet.public["public_a"].id
+#   vpc_security_group_ids      = [aws_security_group.bastion.id]
+#   key_name                    = aws_key_pair.kp.key_name
+#   instance_type               = var.instance_type
+#   iam_instance_profile        = aws_iam_instance_profile.kops_instance_profile.name
 
-  user_data_replace_on_change = true
-  user_data = templatefile("${path.module}/userdata_k8s.sh", {
-    NAME             = "kops.k8s.local"
-    KOPS_STATE_STORE = "s3://${var.bucket_name_kops}"
-  })
-  depends_on = [aws_route_table_association.public]
+#   user_data_replace_on_change = true
+#   user_data = templatefile("${path.module}/userdata_k8s.sh", {
+#     NAME             = "kops.k8s.local"
+#     KOPS_STATE_STORE = "s3://${var.bucket_name_kops}"
+#   })
+#   depends_on = [aws_route_table_association.public]
 
-  tags = {
-    Name = "kops-instance"
-  }
-}
+#   tags = {
+#     Name = "kops-instance"
+#   }
+# }
