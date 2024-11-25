@@ -119,7 +119,7 @@ resource "aws_s3_bucket_public_access_block" "kops" {
 # }
 
 resource "aws_ecr_repository" "application" {
-  name = "wordcloudgen"
+  name                 = "wordcloudgen"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = true

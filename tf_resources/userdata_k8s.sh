@@ -14,7 +14,7 @@ kops create cluster \
   --cloud aws \
   --zones us-east-1a \
   --master-size t3.small \
-  --node-size t3.medium 
+  --node-size t3.small 
   --dns none \
   --yes
 kops update cluster \
