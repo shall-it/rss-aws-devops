@@ -118,6 +118,15 @@ resource "aws_s3_bucket_public_access_block" "kops" {
 #   value = aws_instance.bastion.public_ip
 # }
 
+resource "aws_ecr_repository" "application" {
+  name                 = "wordcloudgen"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+# Uncomment and apply this resource to deploy kOps cluster dynamically
 # resource "aws_instance" "kops_instance" {
 #   ami                         = data.aws_ami.al2023-ami.id
 #   subnet_id                   = aws_subnet.public["public_a"].id
